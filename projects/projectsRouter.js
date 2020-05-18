@@ -4,6 +4,8 @@ const Actions = require('../data/helpers/actionModel.js');
 
 const router = express.Router();
 
+
+// POST
 router.post('/', validateProject, (req, res) => {
   Projects.insert(req.body)
     .then(project => {
@@ -27,6 +29,8 @@ router.post('/:id/actions', validateAction, (req, res) => {
 
 });
 
+
+// GET 
 router.get('/', (req, res) => {
   Projects.get()
     .then(project => {
@@ -53,6 +57,8 @@ router.get('/:id/actions', validateProjectId, (req, res) => {
     })
 });
 
+// DELETE
+
 router.delete('/:id', validateProjectId, (req, res) => {
   Projects.remove(req.params.id)
     .then(project => {
@@ -67,6 +73,9 @@ router.delete('/:id', validateProjectId, (req, res) => {
       res.status(500).json({ message: "Error deleting project from database." })
     })
 });
+
+
+// PUT
 
 router.put('/:id', validateProjectId, validateProject, (req, res) => {
   Projects.update(req.params.id, req.body)

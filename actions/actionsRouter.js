@@ -2,6 +2,8 @@ const express = require('express');
 const Actions = require('../data/helpers/actionModel.js');
 const router = express.Router();
 
+
+// GET
 router.get('/', (req, res) => {
   Actions.get()
     .then(action => {
@@ -17,6 +19,8 @@ router.get('/:id', validateActionId, (req, res) => {
   res.status(200).json(req.action)
 });
 
+
+// DELETE
 router.delete('/:id', validateActionId, (req, res) => {
   Actions.remove(req.params.id)
     .then(action => {
@@ -32,6 +36,8 @@ router.delete('/:id', validateActionId, (req, res) => {
     })
 });
 
+
+// PUT
 router.put('/:id', validateActionId, (req, res) => {
   Actions.update(req.params.id, req.body)
     .then(action => {
