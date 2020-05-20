@@ -1,76 +1,72 @@
 const express = require('express');
-const Actions = require('../data/helpers/actionModel.js');
+
+const Actions = require('../data/helpers/actionModel');
+
 const router = express.Router();
 
-
-// GET
 router.get('/', (req, res) => {
-  Actions.get()
+  const {id} = req.params;
+  console.log(id);
+
+  Actions.get(id)
     .then(action => {
       res.status(200).json(action);
     })
     .catch(error => {
-      console.log(error);
-      res.status(500).json({ message: "Error retrieving the actions."})
-    })
+      res.status(500).json({message: 'Data could not be located', error: error.message});
+    });
 });
 
-router.get('/:id', validateActionId, (req, res) => {
-  res.status(200).json(req.action)
-});
+router.get('/:id', (req, res) => {
+  const {id} = req.params;
+  console.log(id);
 
-
-// DELETE
-router.delete('/:id', validateActionId, (req, res) => {
-  Actions.remove(req.params.id)
-    .then(action => {
-      if (action > 0) {
-        res.status(200).json({ message: "Action has been deleted." })
-      } else {
-        res.status(404).json({ message: "Action could not be found."})
-      }
-    })
-    .catch(error => {
-      console.log(error);
-      res.status(500).json({ message: "Error deleting action from database." })
-    })
-});
-
-
-// PUT
-router.put('/:id', validateActionId, (req, res) => {
-  Actions.update(req.params.id, req.body)
-    .then(action => {
-      if (action) {
-        res.status(200).json(action);
-      } else {
-        res.status(404).json({ message: "Action could not be found."})
-      }
-    })
-    .catch(error => {
-      console.log(error);
-      res.status(500).json({ message: "Error retrieving action from database."})
-    })
-});
-
-// custom middleware
-
-function validateActionId(req, res, next) {
-  const { id } = req.params;
   Actions.get(id)
     .then(action => {
-      if (action) {
-        req.action = action;
-        next();
-      } else {
-        next(new Error("invalid project id"))
-      }
+      res.status(200).json(action);
     })
     .catch(error => {
-      console.log(error);
-      res.status(500).json({ message: "exception", error})
-    })
+      res.status(500).json({message: 'Data could not be located', error: error.message});
+    });
+});
 
-}
+
+// Post is here
+router.post('/', (req, res) => {
+  const data = req.body;
+
+  Actions.insert(data)
+    .then(action => {
+      res.status(201).json(action);
+    })
+    .catch(error => {
+      res.status(500).json({message: 'Data could not be posted', error: error.message});
+    });
+});
+
+router.put('/:id', (req, res) => {
+  const {id} = req.params;
+  const data = req.body;
+
+  Actions.update(id, data)
+    .then(action => {
+      res.status(200).json(action);
+    })
+    .catch(error => {
+      res.status(500).json({message: 'Data could not be changed', message: error.message});
+    });
+});
+
+router.delete('/:id', (req, res) => {
+  const {id} = req.params;
+
+  Actions.remove(id)
+    .then(action => {
+      res.status(200).json(action);
+    })
+    .catch(error => {
+      res.status(500).json({message: 'Data could not be deleted', message: error.message});
+    });
+});
 
 module.exports = router;

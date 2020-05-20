@@ -18,7 +18,7 @@ server.get('/', (req, res) => {
 })
 
 function errorHandler(error, req, res, next) {
-    console.log('jp server.js line 21 error: ', error.message);
+    console.log("jp server.js line 21 error", error.message);
     res.status(400).json({ message: error.message });
 }
 
